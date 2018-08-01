@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <meta property="og:title" content="memo" />
+    <meta property="og:type" content="chat" />
+    <meta property="og:description" content="memo" />
+    <title>memo</title>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="http://cdn.mlkcca.com/v0.6.0/milkcocoa.js"></script>
+    <script src="jquery.ba-throttle-debounce.min.js"></script>
+    <script src="main.js"></script>
+    <script type="text/javascript">
+		(function(b,c){var $=b.jQuery||b.Cowboy||(b.Cowboy={}),a;$.throttle=a=function(e,f,j,i){var h,d=0;if(typeof f!=="boolean"){i=j;j=f;f=c}function g(){var o=this,m=+new Date()-d,n=arguments;function l(){d=+new Date();j.apply(o,n)}function k(){h=c}if(i&&!h){l()}h&&clearTimeout(h);if(i===c&&m>e){l()}else{if(f!==true){h=setTimeout(i?k:l,i===c?e-m:e)}}}if($.guid){g.guid=j.guid=j.guid||$.guid++}return g};$.debounce=function(d,e,f){return f===c?a(d,e,false):a(d,f,e!==false)}})(this);
+
+		$(function() {
+		    //1.ミルクココアインスタンスを作成
+		    var milkcocoa = new MilkCocoa("hotjkaqr51l.mlkcca.com");
+
+		    //2."message"データストアを作成
+		    var ds = milkcocoa.dataStore("memo");
+		    var stream = ds.stream().sort("desc");
+
+		    var windowHeight = $(window).height();
+		    var bodyHeight = $('body').height();
+
+		    function recalcHeights(){
+		      windowHeight = $(window).height();
+		      bodyHeight = $('body').height();
+		    }
+
+		    $(window).on('resize', $.debounce( 200, function(){
+		        recalcHeights();
+		      })
+		    );
+
+		    function getData(callback) {
+
+		      $(window).off('scroll');
+
+		      stream.next(function(err, elems) {
+
+		        if(elems.length == 0){
+		          callback();
+		          return;
+		        }
+
+		        var reversedElems = elems.reverse();
+
+		        reversedElems.forEach(function(el) {
+		          renderMessage(el);
+		        });
+
+		        recalcHeights();
+
+		        $(window).on('scroll',
+		          $.throttle( 200, function(){
+		            if( ($(window).scrollTop() + windowHeight) > (bodyHeight - 300) ) getData(callback);
+		          })
+		        );
+		      });
+		    }
+
+		    getData(function(){
+		      $("#messages").append('<div style="color: #DB6220; margin-top: 30px; text-align: center;">全データを読み込みました</div>');
+		    });
+
+		    //4."message"データストアのプッシュイベントを監視
+		    ds.on("push", function(pushed) {
+		        renderMessage(pushed, true);
+		    });
+
+		    function renderMessage(message, before) {
+		        var message_html = '<p class="post-text">' + escapeHTML(message.value.content) + '</p>';
+		        var date_html = '';
+		        if(message.value.date) {
+		            date_html = '<p class="post-date">'+escapeHTML( new Date(message.value.date).toLocaleString())+'</p>';
+		        }
+		        if(before) $("#messages div:first-child").before('<div id="'+message.id+'" class="post">'+message_html + date_html +'</div>');
+		        else $("#messages").append('<div id="'+message.id+'" class="post">'+message_html + date_html +'</div>');
+		    }
+
+		    function post() {
+		        //5."message"データストアにメッセージをプッシュする
+		        var content = escapeHTML($("#content").val());
+
+		        if (content && content !== "") {
+		            ds.push({
+		                title: "タイトル",
+		                content: content,
+		                date: new Date().getTime()
+		            }, function (e) {});
+		        }
+		        $("#content").val("");
+		    }
+
+		    $('#post').click(function () {
+		        post();
+		    })
+		    $('#content').keydown(function (e) {
+		        if (e.which == 13){
+		            post();
+		            return false;
+		        }
+		    });
+		});
+		//インジェクション対策
+		function escapeHTML(val) {
+		    return $('<div>').text(val).html();
+		};
+    </script>
+    <style type="text/css">
+		html {
+		  -webkit-text-size-adjust:100%;
+		  -ms-text-size-adjust:100%;
+		}
+
+		body {
+		  font-family:"游ゴシック",YuGothic,"ヒラギノ角ゴ ProN W3","Hiragino Kaku Gothic ProN","メイリオ",Meiryo,Arial,sans-serif;
+		  font-size:15px;
+		  background:#f7f7f7;
+		  min-width:320px;
+		  line-height:0.0;
+		  color:#3a342e;
+		  margin:0;
+		}
+
+		textarea {
+		  overflow:auto;
+		  vertical-align:top;
+		}
+
+		.container {
+		  width:100%;
+		  background-color:#A1AAAF;
+		}
+
+		.container .postarea {
+		  max-width:720px;
+		  margin:0 auto;
+		  padding:2em 1.3em;
+		}
+
+		.container .postarea .postarea-text {
+		  width:100%;
+		}
+
+		.container .postarea .postarea-text textarea {
+		  font-size:1em;
+		  width: 100%;
+		  border:1px solid #EDEDED;
+		  border-radius:5px;
+		  height:34px;
+		  resize:vertical;
+		  color:#3a342e;
+		  padding:.5em;
+		  -webkit-box-sizing: border-box;
+		  -moz-box-sizing: border-box;
+		  box-sizing: border-box;
+		}
+
+
+		.container .postarea .postarea-button {
+		  font-weight:600;
+		  margin-top:.1em;
+		  font-size:1em;
+		  height:2.85em;
+		  background:#f7f7f7;
+		  color:#848484;
+		  cursor:pointer;
+		  line-height:2.85em;
+		  border-radius:2px;
+		  text-align:center;
+		  border:1px solid #EDEDED;
+		  text-decoration:none;
+		  float:right;
+		  width:8.8em;
+		}
+
+		.content {
+		  max-width:760px;
+		  margin:3em auto;
+		}
+
+		.content .post {
+		  margin-top:2em;
+		  border-bottom:1px dotted #ccc;
+		  padding:0 1em 1em;
+		}
+
+		.content .post .post-date{
+		  font-size:.7em;
+		  color:#848484;
+		  text-align:right;
+		  border:0;
+		  margin:0;
+		}
+
+		.content .post .post-text {
+		  margin:0;
+		}
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="postarea cf">
+            <div class="postarea-text">
+                <textarea name="" id="content" cols="30" rows="10" placeholder="Enter"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div id="messages" class="content">
+        <div id="dummy"></div>
+    </div>
+
+</body>
+</html>
