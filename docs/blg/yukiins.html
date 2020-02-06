@@ -24,7 +24,7 @@ document.oncontextmenu = function () {return false;}
   };
   firebase.initializeApp(firebaseConfig);
   var database = firebase.database();
-  var dataRef = database.ref('/yuki');
+  var dataRef = database.ref('/yuki').limitToFirst();
 
 </script>
 <!-- ---------------------------------------------------------------- -->
