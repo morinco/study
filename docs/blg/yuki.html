@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+
+<head>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <link rel="shortcut icon" href="data:image/gif;base64,R0lGODlhSgBJAHAAACH5BAEAAAwALAAAAABKAEkAgwAAAFiX11yc1Vqa1Vub1lqZ01ub1WCfz1uc1Vyb01mZ1lub1AAAAAAAAAAAAAAAAAT/kMlJq7046827/2AojmRpnmiqrmzrvnAsg4Fcz0yg36yO8LHf4dcLIIgzoxKhOh6UuMBzCiQtpdXXb4s1YZ/bKGLKJXGFUhxYuRbpqEcjDj2UxkEF45Y+P19pVGtIMnRfXR07Z05ZLnp+d4h1cHpqbIZHTBuYWHFUYnGbnhuWnUt9l34aqAWggzZrgZiqe6yGTzg5aI+ME6WTroSggZwYAayPZLg5YIp6vLCXUMqFYMzFm6FYBcrLV4K8XHB73Axb4qIWBZPD5OXNlhfeV5nkX4U/NTv52Lb09XvOyNDx1UpHOwljUMnD9y3QwV7zbJGKhu8hwkXi9DCrdc/ihIiF/zjZG+dxgsBvvpYcK0lhV6yFwDwmzBjuEhiWF+cN3AMw5sORzFSmtFaSY0QyFJ2xNDLsl7dFR5buqjmMobSfMzFyKnjkmKGH/DLxpCaHgVefUdi507UkKsKtvGKAlDCxKt1S/qKwYsUME8egPYPeVGbJkUhoM7HAvaUMDuK+bAv+IuwHZRqIkkQCnJaYbJhyiqGJw6W4kyJdqOEWpAxY4FZhSxxTwvWEk1EJRIm5K4wgD2XPYsvKYpARHek6NfNaaHiGnLnDs33c8LGurPPTr/HaaTv8YLRqbJ4z1czy3puA4dvihOh3N6htARRMWd+BKP37+PPr38+/v///AJIQAQA7">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>  
+        <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-database.js"></script>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<script>
+document.oncontextmenu = function () {return false;}
+</script>
+
+</head>
+<body oncontextmenu="return false;">
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyB4wxzS1Zy_wRZxqpzPzisWtLgL__qK15M",
+    authDomain: "test-e7b08.firebaseapp.com",
+    databaseURL: "https://test-e7b08.firebaseio.com",
+    projectId: "test-e7b08",
+    storageBucket: "test-e7b08.appspot.com",
+    messagingSenderId: "867379483396",
+    appId: "1:867379483396:web:812d46382531eeab527651"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+  var dataRef = database.ref('/yuki');
+
+</script>
+<!-- ---------------------------------------------------------------- -->
+
+<h3>Yuki*</h3>
+
+
+<script>
+
+// 初期表示と登録後のコールバック
+dataRef.on("child_added", (snapshot) => {
+    dispTodo({
+        id: snapshot.key,
+        value: snapshot.val()
+    });
+});
+
+// TODOを表示する
+const dispTodo = (yuki) => {
+    // TODO内容をリストの一番上に挿入
+    const todo_html = yuki.value.dates + "　" + yuki.value.content;
+    $("#todo_list").prepend(`<li id="${yuki.id}">${todo_html}</li>`);
+}
+
+
+
+</script>
+<ul><div id="todo_list"></div></ul>
+
+<style type"text/css">
+ul {
+  padding: 0;
+  position: relative;
+}
+
+ul li {
+  color: white;
+  background: #ffb6c1;
+  line-height: 1.5;
+  padding: 0.5em 0.5em 0.5em 2em;
+  border-bottom: 2px solid white;
+  list-style-type: none!important;
+  font-weight: bold; /*太字*/
+}
+
+li a{display:block;}
+
+ul li:before {
+  font-family: "Font Awesome 5 Free";
+  content: "\f2dc"; /*1b0 787*/
+  position: absolute;
+  left : 0.5em; /*左端からのアイコンまでの距離*/
+  color: white; /*アイコン色*/
+}
+
+
+</style>
+</body>
