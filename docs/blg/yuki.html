@@ -13,6 +13,7 @@ document.oncontextmenu = function () {return false;}
 </script>
 
 </head>
+<title>yuki</title>
 <body oncontextmenu="return false;">
 <script>
   var firebaseConfig = {
@@ -26,7 +27,7 @@ document.oncontextmenu = function () {return false;}
   };
   firebase.initializeApp(firebaseConfig);
   var database = firebase.database();
-  var dataRef = database.ref('/yuki');
+  var dataRef = database.ref('/yuki').limitToFirst(100);
 
 </script>
 <!-- ---------------------------------------------------------------- -->
