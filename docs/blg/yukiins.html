@@ -8,11 +8,11 @@
         <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>  
         <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-database.js"></script>
 </head>
-<script>
-document.oncontextmenu = function () {return false;}
-</script>
 
 <script>
+document.oncontextmenu = function () {return false;}
+
+
   var firebaseConfig = {
     apiKey: "AIzaSyB4wxzS1Zy_wRZxqpzPzisWtLgL__qK15M",
     authDomain: "test-e7b08.firebaseapp.com",
@@ -39,6 +39,7 @@ document.oncontextmenu = function () {return false;}
         <button id="post" width="30" class="btn-real"><i class="fas fa-paw"></i></button>
     </div>
 </div>
+<br>
 <div id="todo_list"></div>
 
 <script>
@@ -77,8 +78,22 @@ dataRefRead.on("child_added", (snapshot) => {
 const dispTodo = (yuki) => {
     // TODO内容をリストの一番上に挿入
     const todo_html = yuki.value.dates + "　" + yuki.value.content;
-    $("#todo_list").prepend(`<li id="${yuki.id}">${todo_html}</li>`);
+    $("#todo_list").prepend(`<div id="${yuki.id}"><button class="done">DEL</button>${todo_html}</div>`);
 }
+
+
+// 削除処理
+$(document).on('click', '.done', (event) => {
+    alert();
+    const id = $(event.target).closest('div').attr('id');
+    firebase.database().ref('yuki/' + id).remove();
+});
+
+
+// 削除
+ref.on("child_removed", (snapshot) => {
+    $("#"+snapshot.key).remove();
+});
 
 </script>
 
