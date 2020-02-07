@@ -14,7 +14,7 @@ document.oncontextmenu = function () {return false;}
 
 </head>
 <title>yuki</title>
-<body oncontextmenu="return false;">
+
 <script>
   var firebaseConfig = {
     apiKey: "AIzaSyB4wxzS1Zy_wRZxqpzPzisWtLgL__qK15M",
@@ -32,7 +32,7 @@ document.oncontextmenu = function () {return false;}
 </script>
 <!-- ---------------------------------------------------------------- -->
 
-<h3>Yuki*</h3>
+<h2>Yuki*</h2>
 
 
 <script>
@@ -49,7 +49,7 @@ dataRef.on("child_added", (snapshot) => {
 const dispTodo = (yuki) => {
     // TODO内容をリストの一番上に挿入
     const todo_html = yuki.value.dates + "　" + yuki.value.content;
-    $("#todo_list").prepend(`<li id="${yuki.id}">${todo_html}</li>`);
+    $("#todo_list").prepend(`<div class="aka" id="${yuki.id}">${todo_html}</div>`);
 }
 
 
@@ -84,5 +84,59 @@ ul li:before {
 }
 
 
+h2{
+ color: #590c11;	/* 文字色 */
+ overflow: hidden;
+ padding: 10px;	/* 余白 */
+ position: relative;
+}
+h2:after {
+ background-color: #f3a3a8;	/* 1個目（一番左）のドットの色 */
+ border-radius: 50%;
+ content: '';
+ margin-left: 15px;	/* 最後の文字とドットとの余白 */
+ position: absolute;
+ top: 50%;
+ transform : translateY(-50%);
+ width: 5px;	/* ドットの幅 */
+ height: 5px;	/* ドットの高さ */
+ box-shadow: 20px 0px 0px rgb(217,204,179),	/* 2個目のドットの位置と色 */
+  40px 0px 0px rgb(217,204,179),	/* 3個目のドットの位置と色 */
+  60px 0px 0px rgb(243,163,168),	/* 4個目のドットの位置と色 */
+  80px 0px 0px rgb(217,204,179),	/* 5個目のドットの位置と色 */
+  100px 0px 0px rgb(217,204,179),	/* 6個目のドットの位置と色 */
+  120px 0px 0px rgb(243,163,168),	/* 7個目のドットの位置と色 */
+  140px 0px 0px rgb(217,204,179),	/* 8個目のドットの位置と色 */
+  160px 0px 0px rgb(217,204,179),	/* 9個目のドットの位置と色 */
+  180px 0px 0px rgb(243,163,168),	/* 10個目のドットの位置と色 */
+  200px 0px 0px rgb(217,204,179),	/* 11個目のドットの位置と色 */
+  220px 0px 0px rgb(217,204,179);	/* 12個目のドットの位置と色 */
+}
+
+        
+.aka {
+  position: relative;
+  display: inline-block;
+  padding: .8em 4em;
+  background: -webkit-linear-gradient(#ffc0cb , #ffc0cb);
+  background: linear-gradient(#ffc0cb , #ffc0cb)<!-- (#fe5f95 , #ff3f7f) -->;
+  border: 1px solid #fff;<!-- fe3276 -->
+  border-radius: 4px;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  width:50%;
+}
+.aka::after {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  bottom: 3px;
+  left: 3px;
+  content: '';
+  border: 2px dashed #fff;
+  border-radius: 4px;
+}
+
 </style>
-</body>
+
