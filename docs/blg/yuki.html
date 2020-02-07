@@ -13,7 +13,6 @@ document.oncontextmenu = function () {return false;}
 </script>
 
 </head>
-<title>yuki</title>
 
 <script>
   var firebaseConfig = {
@@ -27,12 +26,12 @@ document.oncontextmenu = function () {return false;}
   };
   firebase.initializeApp(firebaseConfig);
   var database = firebase.database();
-  var dataRef = database.ref('/yuki').limitToFirst(100);
+  var dataRef = database.ref('/yuki').limitToLast(20);
 
 </script>
 <!-- ---------------------------------------------------------------- -->
 
-<h2>Yuki*</h2>
+<h2>FluentMe*</h2>
 
 
 <script>
@@ -48,16 +47,45 @@ dataRef.on("child_added", (snapshot) => {
 // TODOを表示する
 const dispTodo = (yuki) => {
     // TODO内容をリストの一番上に挿入
-    const todo_html = yuki.value.dates + "　" + yuki.value.content;
-    $("#todo_list").prepend(`<div class="aka" id="${yuki.id}">${todo_html}</div>`);
+    const todo_html = yuki.value.dates + "<br>" + yuki.value.content;
+    $("#todo_list").prepend(`<div class="aka" id="${yuki.id}">${todo_html}</div><br>`);
 }
 
-
-
 </script>
+
 <ul><div id="todo_list"></div></ul>
 
+
+
+
+
+
+
 <style type"text/css">
+.aka {
+  position: relative;
+  display: inline-block;
+  padding: .8em 4em;
+  background: -webkit-linear-gradient(#ffc0cb , #ffc0cb);
+  background: linear-gradient(#ffc0cb , #ffc0cb)<!-- (#fe5f95 , #ff3f7f) -->;
+  border: 1px solid #fff;<!-- fe3276 -->
+  border-radius: 4px;
+  color: #fff;
+  text-decoration: none;
+  text-align: center;
+  width:90%;
+}
+.aka::after {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  bottom: 3px;
+  left: 3px;
+  content: '';
+  border: 2px dashed #fff;
+  border-radius: 4px;
+}
+
 ul {
   padding: 0;
   position: relative;
@@ -65,7 +93,7 @@ ul {
 
 ul li {
   color: white;
-  background: #ffb6c1;
+  background: #81d0cb;
   line-height: 1.5;
   padding: 0.5em 0.5em 0.5em 2em;
   border-bottom: 2px solid white;
@@ -77,12 +105,11 @@ li a{display:block;}
 
 ul li:before {
   font-family: "Font Awesome 5 Free";
-  content: "\f2dc"; /*1b0 787*/
+  content: "\f1b0"; /*1b0 787*/
   position: absolute;
   left : 0.5em; /*左端からのアイコンまでの距離*/
   color: white; /*アイコン色*/
 }
-
 
 h2{
  color: #590c11;	/* 文字色 */
@@ -112,31 +139,8 @@ h2:after {
   200px 0px 0px rgb(217,204,179),	/* 11個目のドットの位置と色 */
   220px 0px 0px rgb(217,204,179);	/* 12個目のドットの位置と色 */
 }
-
-        
-.aka {
-  position: relative;
-  display: inline-block;
-  padding: .8em 4em;
-  background: -webkit-linear-gradient(#ffc0cb , #ffc0cb);
-  background: linear-gradient(#ffc0cb , #ffc0cb)<!-- (#fe5f95 , #ff3f7f) -->;
-  border: 1px solid #fff;<!-- fe3276 -->
-  border-radius: 4px;
-  color: #fff;
-  text-decoration: none;
-  text-align: center;
-  width:50%;
-}
-.aka::after {
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  bottom: 3px;
-  left: 3px;
-  content: '';
-  border: 2px dashed #fff;
-  border-radius: 4px;
-}
-
 </style>
+
+
+
 
