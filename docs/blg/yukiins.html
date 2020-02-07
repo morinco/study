@@ -37,6 +37,7 @@ document.oncontextmenu = function () {return false;}
     </div>
     <div>
         <button id="post" width="30" class="btn-real"><i class="fas fa-paw"></i></button>
+        <button id="addbr" width="30" class="btn-real">改行追加</button>
     </div>
 </div>
 <br>
@@ -66,6 +67,12 @@ const postAction = () => {
 // 登録時のアクション
 $('#post').click(() => postAction());
 
+// 改行追加
+$('#addbr').click(() => addbrAction());
+const addbrAction = () => {
+    $("#content").val($("#content").val() + "<br>");
+};
+
 // 初期表示と登録後のコールバック
 dataRefRead.on("child_added", (snapshot) => {
     dispTodo({
@@ -84,6 +91,7 @@ const dispTodo = (yuki) => {
 
 // 削除処理
 $(document).on('click', '.done', (event) => {
+    alert();
     const id = $(event.target).closest('div').attr('id');
     firebase.database().ref('yuki/' + id).remove();
 });
