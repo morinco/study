@@ -1,0 +1,267 @@
+<!DOCTYPE HTML>
+
+<head>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+        <link rel="shortcut icon" href="data:image/gif;base64,R0lGODlhSgBJAHAAACH5BAEAAAwALAAAAABKAEkAgwAAAFiX11yc1Vqa1Vub1lqZ01ub1WCfz1uc1Vyb01mZ1lub1AAAAAAAAAAAAAAAAAT/kMlJq7046827/2AojmRpnmiqrmzrvnAsg4Fcz0yg36yO8LHf4dcLIIgzoxKhOh6UuMBzCiQtpdXXb4s1YZ/bKGLKJXGFUhxYuRbpqEcjDj2UxkEF45Y+P19pVGtIMnRfXR07Z05ZLnp+d4h1cHpqbIZHTBuYWHFUYnGbnhuWnUt9l34aqAWggzZrgZiqe6yGTzg5aI+ME6WTroSggZwYAayPZLg5YIp6vLCXUMqFYMzFm6FYBcrLV4K8XHB73Axb4qIWBZPD5OXNlhfeV5nkX4U/NTv52Lb09XvOyNDx1UpHOwljUMnD9y3QwV7zbJGKhu8hwkXi9DCrdc/ihIiF/zjZG+dxgsBvvpYcK0lhV6yFwDwmzBjuEhiWF+cN3AMw5sORzFSmtFaSY0QyFJ2xNDLsl7dFR5buqjmMobSfMzFyKnjkmKGH/DLxpCaHgVefUdi507UkKsKtvGKAlDCxKt1S/qKwYsUME8egPYPeVGbJkUhoM7HAvaUMDuK+bAv+IuwHZRqIkkQCnJaYbJhyiqGJw6W4kyJdqOEWpAxY4FZhSxxTwvWEk1EJRIm5K4wgD2XPYsvKYpARHek6NfNaaHiGnLnDs33c8LGurPPTr/HaaTv8YLRqbJ4z1czy3puA4dvihOh3N6htARRMWd+BKP37+PPr38+/v///AJIQAQA7">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-auth.js"></script>  
+        <script src="https://www.gstatic.com/firebasejs/7.8.0/firebase-database.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<div class="wrapper">
+  <div class="l-container">
+    <div class="grid">
+      <div class="grid__inner">
+        <div class="grid__item">
+          <div class="js-post count" data-initial="hatsushi">
+            <p class="count__name js-name-hatsushi"><i class="fas fa-paw"></i></p>
+            <p class="count__num js-count js-count-hatsushi">0</p>
+          </div>
+        </div>
+        <div class="grid__item">
+          <div class="js-post count" data-initial="masakuni">
+            <p class="count__name js-name-masakuni"><i class="fas fa-paw"></i></p>
+            <p class="count__num js-count js-count-masakuni">0</p>
+          </div>
+        </div>
+        <div class="grid__item">
+          <div class="js-post count" data-initial="tk">
+            <p class="count__name js-name-tk"><i class="fas fa-paw"></i></p>
+            <p class="count__num js-count js-count-tk">0</p>
+          </div>
+        </div>
+        <div class="grid__item">
+          <div class="js-post count" data-initial="kaz">
+            <p class="count__name js-name-kaz"><i class="fas fa-paw"></i></p>
+            <p class="count__num js-count js-count-kaz">0</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="layer js-layer dn">
+
+  </div>
+<script src="https://www.gstatic.com/firebasejs/4.6.0/firebase.js"></script>
+<script>
+  var firebaseConfig = {
+    apiKey: "AIzaSyB4wxzS1Zy_wRZxqpzPzisWtLgL__qK15M",
+    authDomain: "test-e7b08.firebaseapp.com",
+    databaseURL: "https://test-e7b08.firebaseio.com",
+    projectId: "test-e7b08",
+    storageBucket: "test-e7b08.appspot.com",
+    messagingSenderId: "867379483396",
+    appId: "1:867379483396:web:812d46382531eeab527651"
+  };
+  firebase.initializeApp(firebaseConfig);
+  var database = firebase.database();
+
+
+<!-- ---------------------------------------------------------------- -->
+
+const TRANSITION_END = 'transitionend';
+//firebase.initializeApp({databaseURL: "https://test-e7b08.firebaseio.com"});
+//let database = firebase.database(); //firebase初期化
+let refCount = database.ref('count');
+let $post = $('.js-post');
+let $count = $('.js-count');
+let countObj = {
+  'hatsushi': 0,
+  'masakuni': 0,
+  'tk': 0,
+  'kaz': 0
+};
+
+
+let countStop = false;
+let $layer = $('.js-layer');
+let $layerLoading = $('.js-layer-loading');
+
+/*
+ * View
+ * ・カウント表示
+ */
+let defRenderCount = (countObj) => {
+  let $targetCountObj = $(`.js-count-${countObj.id}`);
+
+  $targetCountObj.text(countObj.value);
+};
+
+let renderCount = (countObj) => {
+  for (let key in countObj){
+    if(parseInt($(`.js-count-${key}`).text(), 10) !== countObj[key]) {
+      let $targetCountObj = $(`.js-count-${key}`);
+      let $targetCountObjPost = $targetCountObj.closest('.js-post');
+
+      $targetCountObj.text(countObj[key]);
+    }
+  }
+};
+
+let postActionCount = (initial, countVal) => {
+  let arg = {};
+  arg[initial] = countVal;
+  show();
+  refCount.update(arg).then((res)=>{
+    setTimeout(() => {
+      hide();
+    }, 300);
+  });
+};
+
+/*
+ * クリックイベント
+ * ・ボタンクリック
+ * ・初期読み込み
+ * ・pushイベント検知
+ */
+$post.on('click', (e) => {
+  if (countStop) {
+    return;
+  }
+  let initial = $(e.currentTarget).data('initial');
+  countObj[initial] = countObj[initial] + 1;
+  postActionCount(initial, countObj[initial]);
+});
+
+refCount.on("child_added", (snapshot) => {
+  // データベースと同期
+  countObj[snapshot.key] = snapshot.val();
+
+  defRenderCount({
+    id: snapshot.key,
+    value: snapshot.val()
+  });
+});
+
+refCount.on("value", (snapshot) => {
+  let snapshotObj = snapshot.val();
+
+  // データベースと同期
+  for (let key in snapshotObj){
+    countObj[key] = snapshotObj[key];
+  }
+
+  renderCount(snapshot.val());
+});
+
+/*
+ * その他
+ */
+let show = () => {
+  $layer.removeClass('dn');
+  $layerLoading.removeClass('dn');
+  $layer.addClass('is-show');
+  location.reload();
+};
+
+let hide = () => {
+  $layer.removeClass('is-show').one(TRANSITION_END, () => {
+    $layerLoading.addClass('dn');
+    $layer.addClass('dn');
+  });
+};
+</script>
+
+
+<style>
+* {
+  box-sizing: border-box
+}
+.l-container {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+.wrapper {
+  padding: 20px 0;
+}
+.title {
+  margin-top: 0;
+    text-align: center;
+    color: #2196f3;
+    font-size: 25px;
+    line-height: 1.4;
+    text-overflow: ellipsis;
+}
+.grid {
+  .grid__inner {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -13px;
+  }
+  .grid__item {
+    width: 50%;
+    padding: 13px;
+  }
+}
+.count {
+  position: relative;
+  padding: 15px 0;
+  cursor: pointer;
+  border: 1px solid #d0cfcf;
+  border-radius: 6px;
+  background-color: #fff;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+.count__name {
+  display: block;
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 0;
+  line-height: 1;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+.count__num {
+  margin-top: 10px;
+  margin-bottom: 0;
+  line-height: 1;
+  color: #2196f5;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.layer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, .5);
+  opacity: 0;
+  transition: opacity .5s;
+  &.is-show {
+    opacity: 1;
+  }
+}
+.layer__loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100px;
+}
+.layer__count-stop {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #2196f5;
+  font-size: 40px;
+  font-weight: bold;
+  white-space: nowrap;
+  &.layer__count-stop--screen {
+    font-size: 140px;
+  }
+}
+.dn {
+  display: none;
+}
+</style>
